@@ -1,0 +1,140 @@
+<template>
+  <div class="container">
+    <!-- 应用图标 -->
+    <image class="app__icon" src="{{icon}}"></image>
+
+    <!-- 应用名 -->
+    <text class="app__name">{{name}}</text>
+
+    <!-- 应用标签 -->
+    <div class="app__tags">
+      <text class="tag">无安装</text>
+      <text class="gap">|</text>
+      <text class="tag">体积小</text>
+      <text class="gap">|</text>
+      <text class="tag">一步直达</text>
+    </div>
+
+    <!-- 应用描述 -->
+    <text class="app__desc">{{desc}}</text>
+
+    <!-- 应用详情 -->
+    <div class="app__detail detail-first">
+      <text class="app__detail-title">服务类型</text>
+      <text class="app__detail-content">{{serviceType}}</text>
+    </div>
+    <div class="app__detail">
+      <text class="app__detail-title">主体信息</text>
+      <text class="app__detail-content">{{subjectInfo}}</text>
+    </div>
+
+    <!-- 创建快捷方式 -->
+    <input class="btn-create" type="button" onclick="createShortcut" value="创建快捷方式">
+
+    <!-- 版权信息 -->
+    <text class="footer">{{copyright}}</text>
+  </div>
+</template>
+
+<style lang="sass">
+.container {
+  flex-direction: column;
+  align-items: center;
+}
+.app {
+  &__icon {
+    margin-top: 90px;
+    width: 134px;
+    height: 134px;
+    border-radius: 10px;
+  }
+  &__name {
+    margin-top: 20px;
+    color: #000000;
+    font-size: 36px;
+  }
+  &__tags {
+    margin-top: 22px;
+    align-items: center;
+
+    .tag {
+      padding: 0 20px;
+      color: #2a9700;
+      font-size: 28px;
+    }
+    .gap {
+      color: #b2b2b2;
+      font-size: 22px;
+    }
+  }
+  &__desc {
+    margin-top: 40px;
+    width: 650px;
+    color: #8d8d8d;
+    font-size: 26px;
+    line-height: 36px;
+  }
+  &__detail {
+    width: 650px;
+    height: 90px;
+    border-bottom-width: 1px;
+    border-bottom-color: #f0f0f0;
+  }
+  &__detail-title {
+    padding-left: 10px;
+    width: 160px;
+    color: #000000;
+    font-size: 26px;
+  }
+  &__detail-content {
+    color: #8d8d8d;
+    font-size: 26px;
+  }
+}
+.btn-create {
+  margin-top: 75px;
+  width: 550px;
+  height: 86px;
+  color: #ffffff;
+  font-size: 30px;
+  background-color: #09ba07;
+  border-radius: 42px;
+}
+.detail-first {
+  margin-top: 65px;
+  border-top-width: 1px;
+  border-top-color: #f0f0f0;
+}
+.footer {
+  position: fixed;
+  bottom: 55px;
+  width: 750px;
+  color: #8d8d8d;
+  font-size: 24px;
+  text-align: center;
+}
+</style>
+
+<script>
+  /**
+   * 默认的菜单页(可自定义)
+   * 注意：使用加载器测试`创建桌面快捷方式`功能时，需要进入系统设置->权限管理->开启应用加载器的`桌面快捷方式`权限，才能保存到桌面。应用上线后可自动获取`桌面快捷方式`权限
+   */
+  export default {
+    props: ['name', 'icon'],
+    data: {
+      desc: '轻氧快应用 DEMO，仅供体验测试使用',
+      serviceType: '工具类',
+      subjectInfo: 'O2Team',
+      copyright: '@凹凸实验室'
+    },
+    onInit () {
+      // 设置标题栏
+      this.$page.setTitleBar({ text: this.name })
+    },
+    createShortcut () {
+      // 创建快捷方式
+      this.$app.createShortcut()
+    }
+  }
+</script>

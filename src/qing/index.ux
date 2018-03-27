@@ -1,0 +1,98 @@
+<template>
+  <div class="container">
+    <div class="tabs">
+      <!-- S Tabs Content -->
+      <tabs onchange="changeTabActive" index="{{curIndex}}">
+        <tab-content class="tabs__content">
+          <div class="tabs__section">
+            <home></home>
+          </div>
+          <div class="tabs__section">
+            <channel name="前端资讯" key="FRONTEND"></channel>
+          </div>
+          <div class="tabs__section">
+            <channel name="视觉设计" key="UI"></channel>
+          </div>
+        </tab-content>
+      </tabs>
+      <!-- E Tabs Content -->
+      <div class="tabs__bar">
+        <div for="{{(index, item) in tabItems}}" class="tabs__bar-item" onclick="clickTabBar(index)">
+          <image class="tabs__bar-icon" src="{{item.icon[curIndex === index ? 1 : 0]}}"></image>
+          <text class="tabs__bar-text {{curIndex === index ? 'tabs__bar-text--active' : ''}}">{{item.text}}</text>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<import name="home" src="../home/index"></import>
+<import name="channel" src="../components/channel"></import>
+
+<script>
+export default {
+  data () {
+    return {
+      curIndex: 0,
+      tabItems: [{
+        text: '今日资讯',
+        icon: ['../assets/images/icon_home.png', '../assets/images/icon_home_active.png']
+      }, {
+        text: '前端资讯',
+        icon: ['../assets/images/icon_fe.png', '../assets/images/icon_fe_active.png']
+      }, {
+        text: '视觉设计',
+        icon: ['../assets/images/icon_ui.png', '../assets/images/icon_ui_active.png']
+      }],
+    }
+  },
+  changeCurrentTab (idx) {
+    this.$page.setTitleBar({
+      text: this.tabItems[idx].text
+    })
+    this.curIndex = idx
+  },
+  changeTabActive (evt) {
+    this.changeCurrentTab(evt.index)
+  },
+  clickTabBar (idx) {
+    this.changeCurrentTab(idx)
+  },
+  onMenuPress () {
+    this.$app.showMenu()
+  }
+}
+</script>
+
+<style lang="sass">
+.tabs {
+  display: flex;
+  flex-direction: column;
+
+  &__bar {
+    display: flex;
+    border-top-width: 1px;
+    border-top-color: #eeeeee;
+  }
+  &__bar-item {
+    display: flex;
+    padding: 10px;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+    font-size: 12px;
+  }
+  &__bar-icon {
+    padding: 5px;
+    width: 56px;
+    height: 56px;
+  }
+  &__bar-text {
+    color: #aaaaaa;
+    font-size: 20px;
+  }
+  &__bar-text--active {
+    color: #0F85FF;
+  }
+}
+</style>

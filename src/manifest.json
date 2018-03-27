@@ -1,0 +1,49 @@
+{
+  "package": "com.application.demo",
+  "name": "轻氧",
+  "versionName": "1.0.0",
+  "versionCode": "1",
+  "minPlatformVersion": "101",
+  "icon": "/assets/images/logo.png",
+  "features": [
+    { "name": "system.prompt" },
+    { "name": "system.router" },
+    { "name": "system.shortcut" },
+    { "name": "system.webview" },
+    { "name": "system.fetch" }
+  ],
+  "permissions": [
+    { "origin": "*" }
+  ],
+  "config": {
+    "logLevel": "debug"
+  },
+  "router": {
+    "entry": "qing",
+    "pages": {
+      "qing": {
+        "component": "index"
+      },
+      "home": {
+        "component": "index"
+      },
+      "about": {
+        "component": "index"
+      },
+      "webview": {
+        "component": "index"
+      }
+    }
+  },
+  "display": {
+    "titleBarBackgroundColor": "#027fff",
+    "titleBarTextColor": "#e4fffa",
+    "backgroundColor": "#fafafa",
+    "menu": true,
+    "pages": {
+      "qing": {
+        "titleBarText": "轻氧"
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "env": {
+    "commonjs": true
+  },
+  "extends": "o2team",
+  "plugins": [
+    "html"
+  ],
+  "settings": {
+    "html/html-extensions": [".html", ".ux"]
+  },
+  "globals": {
+    "loadData": false,
+    "saveData": false,
+    "history": false,
+    "console": false,
+    "setTimeout": false,
+    "clearTimeout": false,
+    "setInterval": false,
+    "clearInterval": false
+  }
+}

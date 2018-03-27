@@ -1,0 +1,154 @@
+<template>
+  <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
+    <list class="news-container" onscrollbottom="loadMoreArticle">
+      <!-- S Banner 文章 -->
+      <list-item type="banner">
+        <swiper class="banner" autoplay="true" interval="4000">
+          <stack class="banner" for="{{bannerList}}">
+            <image class="banner__image" src="{{$item.image.url}}" onclick="openArticle($item.objectId, $item.title)"></image>
+          </stack>
+        </swiper>
+      </list-item>
+      <!-- E Banner 文章 -->
+
+      <!-- S 类别标题 -->
+      <list-item type="tip">
+        <text class="title-tip">今日资讯</text>
+      </list-item>
+      <!-- S 类别标题 -->
+
+      <!-- S 文章列表 -->
+      <block for="articleList">
+        <list-item type="article" class="article__item" onclick="openArticle($item.objectId, $item.title)">
+          <div class="article__item-image">
+            <image class="item-image" src="{{$item.image.url}}"></image>
+          </div>
+          <div class="article__item-content">
+            <text class="article__item-title">{{$item.title}}</text>
+            <text class="article__item-desc">{{$item.excerpt}}</text>
+          </div>
+          <div class="article__item-info">
+            <text class="read-num">{{$item.readCount}} 阅读</text>
+            <text class="author">{{$item.origin.name}}</text>
+          </div>
+        </list-item>
+      </block>
+      <!-- E 文章列表 -->
+
+      <!-- S 加载更多提示 -->
+      <list-item type="loadMore" class="load-more">
+        <progress type="circular" show="{{hasMoreData}}"></progress>
+        <text show="{{hasMoreData}}">加载更多</text>
+        <text show="{{!hasMoreData}}">没有更多了</text>
+      </list-item>
+      <!-- E 加载更多提示 -->
+    </list>
+  </refresh>
+</template>
+
+<script>
+import router from '@system.router'
+import fetch from '@system.fetch'
+import {
+  HOT_NEWS,
+  NEWS_VIEW
+} from '../utils/api.js'
+
+export default {
+  data () {
+    return {
+      bannerList: [],
+      articleList: [],
+      pageNum: 1,
+      hasMoreData: true,
+      isRefreshing: false
+    }
+  },
+  onInit () {
+    this.pageNum = 1
+    this.getBanner()
+    this.getArticleList()
+  },
+  getBanner () {
+    fetch.fetch({
+      url: HOT_NEWS,
+      success: function (resp) {
+        this.bannerList = JSON.parse(resp.data)
+      }.bind(this),
+      fail (resp, code) {
+        console.log(`拉取 Banner 数据失败，code=${code}`)
+      }
+    })
+  },
+  getArticleList () {
+    fetch.fetch({
+      url: `${NEWS_VIEW}?simple=true&page=${this.pageNum}&channelKey=TODAY`,
+      success: function (resp) {
+        const list = JSON.parse(resp.data)
+
+        if (list && list.length) {
+          this.hasMoreData = true
+          this.isRefreshing = false
+
+          if (this.articleList.length) {
+            this.articleList = this.articleList.concat(list)
+          } else {
+            this.articleList = list
+          }
+        }
+      }.bind(this),
+      fail: function (resp, code) {
+        this.isRefreshing = false
+        console.log(`拉取文章列表数据失败，code=${code}`)
+      }.bind(this)
+    })
+  },
+  loadMoreArticle () {
+    if (this.hasMoreData) {
+      this.pageNum++
+      this.getArticleList()
+    }
+  },
+  openArticle (objectId, title) {
+    if (objectId) {
+      router.push({
+        uri: 'webview',
+        params: {
+          title,
+          url: `http://aotu.jd.com/aurora/views/news/${objectId}`
+        }
+      })
+    }
+  },
+  refresh (evt) {
+    this.isRefreshing = evt.refreshing
+    this.page = 1
+    this.articleList = []
+    this.getArticleList()
+  }
+}
+</script>
+
+<style lang="sass">
+@import '../assets/style/news.scss';
+
+.banner {
+  width: 100%;
+  height: 420px;
+
+  &__image {
+    width: 100%;
+    height: 100%;
+  }
+  &__title {
+    width: 100%;
+    height: 90px;
+    color: #ffffff;
+    lines: 1;
+    text-overflow: ellipsis;
+    text-align: center;
+    background-color: #222222;
+    opacity: 0.5;
+  }
+}
+</style>

@@ -1,0 +1,110 @@
+<template>
+  <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
+    <list class="news-container" onscrollbottom="loadMoreArticle">
+      <!-- S 类别标题 -->
+      <list-item type="tip">
+        <text class="title-tip">{{name || '咨询'}}</text>
+      </list-item>
+      <!-- S 类别标题 -->
+
+      <!-- S 文章列表 -->
+      <block for="articleList">
+        <list-item type="article" class="article__item" onclick="openArticle($item.objectId, $item.title)">
+          <div class="article__item-image">
+            <image class="item-image" src="{{$item.image.url}}"></image>
+          </div>
+          <div class="article__item-content">
+            <text class="article__item-title">{{$item.title}}</text>
+            <text class="article__item-desc">{{$item.excerpt}}</text>
+          </div>
+          <div class="article__item-info">
+            <text class="read-num">{{$item.readCount}} 阅读</text>
+            <text class="author">{{$item.origin.name}}</text>
+          </div>
+        </list-item>
+      </block>
+      <!-- E 文章列表 -->
+
+      <!-- S 加载更多提示 -->
+      <list-item type="loadMore" class="load-more">
+        <progress type="circular" show="{{hasMoreData}}"></progress>
+        <text show="{{hasMoreData}}">加载更多</text>
+        <text show="{{!hasMoreData}}">没有更多了</text>
+      </list-item>
+      <!-- E 加载更多提示 -->
+    </list>
+  </refresh>
+</template>
+
+<script>
+import router from '@system.router'
+import fetch from '@system.fetch'
+import { NEWS_VIEW } from '../utils/api.js'
+
+export default {
+  props: [
+    'name',
+    'key'
+  ],
+  data () {
+    return {
+      articleList: [],
+      pageNum: 1,
+      hasMoreData: true,
+      isRefreshing: false
+    }
+  },
+  onInit () {
+    this.pageNum = 1
+    this.getArticleList()
+  },
+  getArticleList () {
+    fetch.fetch({
+      url: `${NEWS_VIEW}?simple=true&page=${this.pageNum}&channelKey=${this.key || ''}`,
+      success: function (resp) {
+        const list = JSON.parse(resp.data)
+
+        if (list && list.length) {
+          this.hasMoreData = true
+          this.isRefreshing = false
+
+          if (this.articleList.length) {
+            this.articleList = this.articleList.concat(list)
+          } else {
+            this.articleList = list
+          }
+        }
+      }.bind(this),
+      fail: function (resp, code) {
+        this.isRefreshing = false
+        console.log(`拉取文章列表数据失败，code=${code}`)
+      }.bind(this)
+    })
+  },
+  loadMoreArticle () {
+    if (this.hasMoreData) {
+      this.pageNum++
+      this.getArticleList()
+    }
+  },
+  openArticle (objectId, title) {
+    if (objectId) {
+      router.push({
+        uri: 'webview',
+        params: {
+          title,
+          url: `http://aotu.jd.com/aurora/views/news/${objectId}`
+        }
+      })
+    }
+  },
+  refresh (evt) {
+    this.isRefreshing = evt.refreshing
+    this.page = 1
+    this.articleList = []
+    this.getArticleList()
+  }
+}
+</script>
+
+<style lang="sass" src="../assets/style/news.scss"></style>

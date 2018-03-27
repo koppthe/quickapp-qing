@@ -1,0 +1,20 @@
+<template>
+  <web src="{{url}}"></web>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      url: '',
+      title: ''
+    }
+  },
+  onInit () {
+    this.$page.setTitleBar({
+      text: this.title
+    })
+  }
+}
+</script>
+
