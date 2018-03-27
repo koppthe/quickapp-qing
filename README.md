@@ -8,6 +8,10 @@
 
 「轻氧」简易版的快应用版本，仅供体验测试用
 
+# 应用截图
+
+<img width="300" src="http://storage.360buyimg.com/mtd/home/wechatimg991522159249792.jpeg">
+
 ## 相关资料
 
 - [快应用](https://www.quickapp.cn/)
